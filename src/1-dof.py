@@ -19,13 +19,13 @@ class DynamicEnv(gym.Env):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
-    def step(self, action, X_):
+    def step(self, action, X_,ground_acceleration):
         action = np.clip(action, self.action_space.low, self.action_space.high)
         m = 1
         k = 100
         c = 0.4
         dt = 0.01
-        
+
         #action = np.array([0])
         state = self.state
         state = np.concatenate([[X_],[state]],axis=1)[0]
@@ -35,21 +35,16 @@ class DynamicEnv(gym.Env):
         # Dynamic model
         A_c = np.array([[0.,1.],[-k/m,-c/m]])
         B_c = np.array([[0.],[1/1.0]])
-        A_d = expm(A_c*dt)
-        try:
-            B_d = matmul(matmul(np.linalg.inv(A_c),(A_d - np.eye(2) )),B_c)    # why can't we use non-linear equation
-        except:
-            B_d = B_c*dt
+        G_c = np.array([[0.],[1]])
 
-        C_d = np.array([-10**2,-2*10*0.02])
-        D_d = np.array([1/1.0])
-        a = matmul(B_d,action)
-        b = matmul(A_d,np.transpose(input[:,:2]))
-        c = np.transpose(input[:,:2])
-        d = input[:,:2]
-        ground_acc = state[3]
-        ground_force = np.array([1*ground_acc])
-        x_pre = matmul(A_d,np.transpose(input[:,:2][0])) + matmul(B_d,action + ground_force)
+        A_d = expm(A_c*dt)
+        B_d = matmul(matmul(np.linalg.inv(A_c),(A_d - np.eye(2) )),B_c)  
+        G_d = matmul(matmul(np.linalg.inv(A_c),(A_d - np.eye(2) )),G_c) 
+
+        C_d = A_c[1,:]
+        D_d = B_c[1,:]
+
+        x_pre = matmul(A_d,np.transpose(input[:,:2][0])) + matmul(B_d,action) + matmul(G_d,ground_acceleration)
         y_pre = matmul(C_d,np.transpose(x_pre) ) + D_d*action[0]
 
         
