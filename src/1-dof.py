@@ -6,10 +6,13 @@ from gym.utils import seeding
 import numpy as np
 
 class DynamicEnv(gym.Env):
-    def __init__(self):
-        self.high = np.array([10.,10.,10])     
-        self.action_space = spaces.Box(low=np.array([-10.]), high=np.array([10.]), dtype=np.float32)
-        self.observation_space = spaces.Box(-self.high, self.high, dtype=np.float32)
+    def __init__(self,action_space_lowerbound=-np.array([10.]),action_space_upperbound=np.array([10.]),observation_space_lowerbound=-np.array([10.,10.,10]),observation_space_upperbound = np.array([10.,10.,10])):
+        self.observation_space_lowerbound = observation_space_lowerbound
+        self.observation_space_upperbound = observation_space_upperbound
+        self.action_space_lowerbound = action_space_lowerbound
+        self.action_space_upperbound = action_space_upperbound
+        self.action_space = spaces.Box(low=action_space_lowerbound, high=action_space_upperbound, dtype=np.float32)
+        self.observation_space = spaces.Box(-observation_space_lowerbound, observation_space_upperbound, dtype=np.float32)
         self.seed()
 
     def seed(self, seed=None):
@@ -18,8 +21,11 @@ class DynamicEnv(gym.Env):
 
     def step(self, action, X_):
         action = np.clip(action, self.action_space.low, self.action_space.high)
-
-
+        m = 1
+        k = 100
+        c = 0.4
+        dt = 0.01
+        
         #action = np.array([0])
         state = self.state
         state = np.concatenate([[X_],[state]],axis=1)[0]
@@ -27,8 +33,7 @@ class DynamicEnv(gym.Env):
         input = np.concatenate([[state[0:2]], [action]], axis=1)
 
         # Dynamic model
-        dt = 0.02
-        A_c = np.array([[0.,1.],[-10**2,-2*10*0.02]])
+        A_c = np.array([[0.,1.],[-k/m,-c/m]])
         B_c = np.array([[0.],[1/1.0]])
         A_d = expm(A_c*dt)
         try:
@@ -57,6 +62,6 @@ class DynamicEnv(gym.Env):
         pass
 
     def reset(self):
-        self.state = self.np_random.uniform(low=-self.high/2, high=self.high/2, size=(3,))
+        self.state = self.np_random.uniform(low=self.observation_space_lowerbound/2, high=self.observation_space_upperbound/2, size=(3,))
         self.steps_beyond_done = None
         return np.array(self.state)
