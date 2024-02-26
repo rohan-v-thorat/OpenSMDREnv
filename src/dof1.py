@@ -44,14 +44,14 @@ class DynamicEnv(gym.Env):
         C_d = A_c[1,:]
         D_d = B_c[1,:]
 
-        x_pre = matmul(A_d,np.transpose(input[:,:2][0])) + matmul(B_d,action) + matmul(G_d,ground_acceleration)
+        x_pre = matmul(A_d,np.transpose(input[:,:2][0])) + matmul(B_d,action) + matmul(G_d,np.array([ground_acceleration]))
         y_pre = matmul(C_d,np.transpose(x_pre) ) + D_d*action[0]
 
         
         reward =  -(abs(x_pre[0])  + abs(y_pre[0])/100) #+ abs(action[0])/100
-        X_ = np.transpose(x_pre)
+        system_state = np.transpose(x_pre)
         self.state = y_pre # plus ground acceleration plus action ( read data file)
-        return self.state, reward, X_, y_pre
+        return self.state, reward, system_state, y_pre
 
     def render(self):
         pass
