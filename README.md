@@ -8,6 +8,7 @@ User have the flexibility to change the default mass, spring, damper properties.
 Requires:
 * `numpy`
 * `gymnasium`
+* `scipy`
 
 *We hope you find this code helpful*
 
