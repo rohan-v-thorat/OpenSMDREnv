@@ -1,6 +1,7 @@
 import argparse
 import datetime
 import gym
+from gym import spaces
 import sys
 sys.path.insert(0,'../src')
 from dof1 import DynamicEnv
@@ -52,12 +53,21 @@ args = parser.parse_args()
 # Read data
 data = sio.loadmat('data_0.mat')
 data = data['T']
+
+############# user defined parameters ############
+time_step = 0.01
+system_parameter = {'M':1, 'K':100, 'C':0.4}
+space_bounds = {'action_space_lowerbound':-np.array([10.]), 'action_space_upperbound':np.array([10.]), 'observation_space_lowerbound':-np.array([10.,10.,10]), 'observation_space_upperbound': np.array([10.,10.,10])}
+reward_weights = {'displacement_weights':np.array([1.]), 'velocity_weights':np.array([0.]), 'acceleration_weights':np.array([1/100])}
+
+# shall we remove observation_space_bound ? 
+##################################################
+
 # Environment
 #env = gym.make(args.env_name)
-env = DynamicEnv()
+env = DynamicEnv(time_step, system_parameter, space_bounds, reward_weights)
 env.seed(args.seed)
 env.action_space.seed(args.seed)
-
 torch.manual_seed(args.seed)
 np.random.seed(args.seed)
 
