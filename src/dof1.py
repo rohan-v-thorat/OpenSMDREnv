@@ -31,9 +31,8 @@ class DynamicEnv(gym.Env):
         K = self.K
         C = self.C
         dt = self.dt
-
-        #action = np.array([0])
         state = self.state
+        
         state = np.concatenate([[env_state],[state]],axis=1)[0]
  
         input = np.concatenate([[state[0:2]], [action]], axis=1)
