@@ -58,7 +58,7 @@ data = data['T']
 time_step = 0.01
 system_parameter = {'M':1, 'K':100, 'C':0.4}
 space_bounds = {'action_space_lowerbound':-np.array([10.]), 'action_space_upperbound':np.array([10.]), 'observation_space_lowerbound':-np.array([10.,10.,10]), 'observation_space_upperbound': np.array([10.,10.,10])}
-reward_weights = {'displacement_weights':np.array([1.]), 'velocity_weights':np.array([0.]), 'acceleration_weights':np.array([1/100])}
+reward_weights = {'displacement_weights':np.array([1.]), 'velocity_weights':np.array([1.]), 'acceleration_weights':np.array([1.])}
 
 # shall we remove observation_space_bound ? 
 ##################################################
@@ -90,15 +90,15 @@ for i_episode in itertools.count(1):
     #state = env.reset()
     max_ep_steps = 1000
     start_point = 0
-    state = np.array([0.,data[start_point,0],0.])
-    env.state = state
+    agent_state = np.array([0.,data[start_point,0],0.])
+    env.agent_state = agent_state
     for j in range(start_point + 1, start_point+1+max_ep_steps):
         if args.start_steps > total_numsteps:
             action = env.action_space.sample()
         else:
-            action = agent.select_action(state)  # Sample action from policy
+            action = agent.select_action(agent_state)  # Sample action from policy
         if j==1:
-           system_state = np.array([0.,0.])
+           env_state = np.array([0.,0.])
                   
         if len(memory) > args.batch_size:
             for i in range(args.updates_per_step):  # Number of updates per step in environment
@@ -111,8 +111,8 @@ for i_episode in itertools.count(1):
                 writer.add_scalar('loss/policy', policy_loss, updates)
                 updates += 1
         ground_acceleration = data[start_point,0]
-        next_state, reward, system_state, y_pre= env.step(action,system_state, ground_acceleration) # Step
-        next_state = np.concatenate([y_pre,[data[j,0]],action], axis=0)
+        reward, env_state, env_acceleration= env.step(action, env_state, ground_acceleration) # Step
+        next_agent_state = np.concatenate([env_acceleration,[data[j,0]],action], axis=0)
         episode_steps += 1
         total_numsteps += 1
         episode_reward += reward
@@ -121,10 +121,10 @@ for i_episode in itertools.count(1):
         # (https://github.com/openai/spinningup/blob/master/spinup/algos/sac/sac.py)
         mask = 1 if episode_steps == max_ep_steps else float(not done)
 
-        memory.push(state, action, reward, next_state, mask) # Append transition to memory
+        memory.push(agent_state, action, reward, next_agent_state, mask) # Append transition to memory
 
-        state = next_state
-        env.state = next_state
+        agent_state = next_agent_state
+        env.agent_state = agent_state
     if total_numsteps > args.num_steps:
         break
 
@@ -143,15 +143,15 @@ for i_episode in itertools.count(1):
             for j in range(start_point + 1, start_point+1+max_ep_steps):
                 action = agent.select_action(state, eval=True)
                 if j==1:
-                   system_state = np.array([0.,0.])
+                   env_state = np.array([0.,0.])
 
-                next_state, reward, done,system_state , y_pre= env.step(action,system_state) # Step
-                next_state = np.concatenate([y_pre,[data[j,0]],action], axis=0)
+                next_state, reward, done,env_state , env_acceleration= env.step(action,env_state) # Step
+                next_state = np.concatenate([env_acceleration,[data[j,0]],action], axis=0)
                 episode_reward += reward
                 if y_store == []:
-                    y_store = y_pre
+                    y_store = env_acceleration
                 else:
-                    y_store = np.vstack((y_store, y_pre))
+                    y_store = np.vstack((y_store, env_acceleration))
 
                 state = next_state
                 env.state = state
