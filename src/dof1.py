@@ -60,7 +60,7 @@ class DynamicEnv(gym.Env):
         xddot = env_acceleration
 
         # calculation of the reward
-        reward =  -((matmul(w1,abs(x)))+(matmul(w2,abs(xdot)))+(matmul(w3,abs(xddot))))
+        reward =  -((matmul(w1,abs(x)))+(matmul(w2,abs(xdot)))+(matmul(w3,abs(xddot))))  # add force
 
         env_state = np.transpose(env_state)
         return reward, env_state, env_acceleration
