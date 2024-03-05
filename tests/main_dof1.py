@@ -56,9 +56,10 @@ data = data['T']
 
 ############# user defined parameters ############
 time_step = 0.01
-system_parameter = {'M':np.array([1]), 'K':np.array([100]), 'C':np.array([0.4])}    # change the scalar data into numpy array
-space_bounds = {'action_space_lowerbound':-np.array([10.]), 'action_space_upperbound':np.array([10.]), 'observation_space_lowerbound':-np.array([10.,10.,10]), 'observation_space_upperbound': np.array([10.,10.,10])}
-reward_weights = {'displacement_weights':np.array([1.]), 'velocity_weights':np.array([1.]), 'acceleration_weights':np.array([1.])}
+system_parameter = {'M':np.array([1]), 'K':np.array([100]), 'C':np.array([0.4])}  
+space_bounds = {'action_space_lowerbound':-np.array([10.]), 'action_space_upperbound':np.array([10.]),\
+                 'observation_space_lowerbound':-np.array([10.,10.,10]), 'observation_space_upperbound': np.array([10.,10.,10])}
+reward_weights = {'displacement_weights':np.array([1.]), 'velocity_weights':np.array([1.]), 'acceleration_weights':np.array([1.]), 'control_force_weights':np.array([1.])}
 
 # shall we remove observation_space_bound ? 
 ##################################################
@@ -110,7 +111,7 @@ for i_episode in itertools.count(1):
                 writer.add_scalar('loss/critic_2', critic_2_loss, updates)
                 writer.add_scalar('loss/policy', policy_loss, updates)
                 updates += 1
-        ground_acceleration = data[start_point,0]
+        ground_acceleration = np.array([data[start_point,0]])
         reward, env_state, env_acceleration= env.step(action, env_state, ground_acceleration) # Step
         next_agent_state = np.concatenate([env_acceleration,[data[j,0]],action], axis=0)
         episode_steps += 1

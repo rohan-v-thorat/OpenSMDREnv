@@ -92,7 +92,7 @@ for i_episode in itertools.count(1):
     #state = env.reset()
     max_ep_steps = 1000
     start_point = 0
-    agent_state = np.array([0.,data[start_point,0],0.])
+    agent_state = np.array([0.,0.,0.,data[start_point,0],0.,0.,0.])
     env.agent_state = agent_state
     for j in range(start_point + 1, start_point+1+max_ep_steps):
         if args.start_steps > total_numsteps:
@@ -100,7 +100,7 @@ for i_episode in itertools.count(1):
         else:
             action = agent.select_action(agent_state)  # Sample action from policy
         if j==1:
-           env_state = np.array([0.,0.])
+           env_state = np.zeros(2*3)
                   
         if len(memory) > args.batch_size:
             for i in range(args.updates_per_step):  # Number of updates per step in environment
@@ -112,13 +112,13 @@ for i_episode in itertools.count(1):
                 writer.add_scalar('loss/critic_2', critic_2_loss, updates)
                 writer.add_scalar('loss/policy', policy_loss, updates)
                 updates += 1
-        ground_acceleration = data[start_point,0]
+        ground_acceleration = np.array([data[start_point,0]])
         reward, env_state, env_acceleration= env.step(action, env_state, ground_acceleration) # Step
         next_agent_state = np.concatenate([env_acceleration,[data[j,0]],action], axis=0)
         episode_steps += 1
         total_numsteps += 1
         episode_reward += reward
-
+        
         # Ignore the "done" signal if it comes from hitting the time horizon.
         # (https://github.com/openai/spinningup/blob/master/spinup/algos/sac/sac.py)
         mask = 1 if episode_steps == max_ep_steps else float(not done)
@@ -129,7 +129,7 @@ for i_episode in itertools.count(1):
         env.agent_state = agent_state
     if total_numsteps > args.num_steps:
         break
-
+    
     writer.add_scalar('reward/train', episode_reward, i_episode)
     print("Episode: {}, total numsteps: {}, episode steps: {}, reward: {}".format(i_episode, total_numsteps, episode_steps, round(episode_reward, 2)))
     y_store = []

@@ -18,11 +18,31 @@ class DynamicEnv(gym.Env):
         self.action_space_upperbound = space_bounds["action_space_upperbound"]
         self.action_space = spaces.Box(low=self.action_space_lowerbound, high=self.action_space_upperbound, dtype=np.float32)
         self.observation_space = spaces.Box(self.observation_space_lowerbound, self.observation_space_upperbound, dtype=np.float32)
-        self.M = system_parameter["M"]
-        self.K = system_parameter["K"]
-        self.C = system_parameter["C"]
-        self.dt = time_step
+        M = system_parameter["M"]
+        K = system_parameter["K"]
+        C = system_parameter["C"]
+        dt = time_step
         self.reward_weights = reward_weights
+
+        # continuous system 
+        A_c = np.concatenate(([np.concatenate((np.zeros((3,3)),np.eye(3)),axis=1)],\
+                        [np.concatenate((-matmul(np.linalg.inv(M),K),-matmul(np.linalg.inv(M),C)),axis=1)]),axis=0)
+        B_c = np.array([[np.zeros((3,3))],[np.linalg.inv(M)]])
+        G_c = np.array([[0.],[1]])
+
+        # discrete system
+        A_d = expm(A_c*dt)
+        B_d = np.linalg.inv(A_c)@(A_d - np.eye(2))@B_c  
+        G_d = np.linalg.inv(A_c)@(A_d - np.eye(2) )@G_c
+        C_d = A_c[1:2,:]
+        D_d = B_c[1:2,:]
+
+        self.A_d = A_d
+        self.B_d = B_d
+        self.G_d = G_d
+        self.C_d = C_d
+        self.D_d = D_d
+
         self.seed()
 
     def seed(self, seed=None):
@@ -31,31 +51,23 @@ class DynamicEnv(gym.Env):
 
     def step(self, action, env_state, ground_acceleration):
         action = np.clip(action, self.action_space.low, self.action_space.high) # might be of no use, can be removed
-        M = self.M
-        K = self.K
-        C = self.C
-        dt = self.dt
+        
+        A_d = self.A_d
+        B_d = self.B_d
+        G_d = self.G_d
+        C_d = self.C_d
+        D_d = self.D_d
+
         w1 = self.reward_weights["displacement_weights"]
         w2 = self.reward_weights["velocity_weights"]
         w3 = self.reward_weights["acceleration_weights"]
-
-        # continuous system 
-        A_c = np.array([[0.,1.],[-K/M,-C/M]])
-        B_c = np.array([[0.],[1/1.0]])
-        G_c = np.array([[0.],[1]])
-
-        # discrete system
-        A_d = expm(A_c*dt)
-        B_d = matmul(matmul(np.linalg.inv(A_c),(A_d - np.eye(2) )),B_c)  
-        G_d = matmul(matmul(np.linalg.inv(A_c),(A_d - np.eye(2) )),G_c) 
-        C_d = A_c[1,:]
-        D_d = B_c[1,:]
+        w4 = self.reward_weights["control_force_weights"]
 
         # process equation / discrete state-space model
-        env_state = matmul(A_d,np.transpose(env_state)) + matmul(B_d,action) + matmul(G_d,np.array([ground_acceleration]))
+        env_state = A_d@np.transpose(env_state) + B_d@action + G_d@ground_acceleration 
 
         # acceleration calculated based on the state of the environment
-        env_acceleration = matmul(C_d,np.transpose(env_state) ) + D_d*action[0]
+        env_acceleration = C_d@np.transpose(env_state) + D_d@action
         
         # assignment of the displacement, velocity and acceleration values
         x = env_state[0:1]
@@ -63,7 +75,7 @@ class DynamicEnv(gym.Env):
         xddot = env_acceleration
 
         # calculation of the reward
-        reward =  -((matmul(w1,abs(x)))+(matmul(w2,abs(xdot)))+(matmul(w3,abs(xddot))))
+        reward =  -(w1@abs(x) + w2@abs(xdot) + w3@abs(xddot) + w4@abs(action))  
 
         env_state = np.transpose(env_state)
         return reward, env_state, env_acceleration
