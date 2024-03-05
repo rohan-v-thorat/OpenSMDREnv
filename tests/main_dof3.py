@@ -4,7 +4,7 @@ import gym
 from gym import spaces
 import sys
 sys.path.insert(0,'../src')
-from dof1 import DynamicEnv
+from dof3 import DynamicEnv
 import numpy as np
 import itertools
 import torch
@@ -56,9 +56,11 @@ data = data['T']
 
 ############# user defined parameters ############
 time_step = 0.01
-system_parameter = {'M':np.array([1]), 'K':np.array([100]), 'C':np.array([0.4])}    # change the scalar data into numpy array
-space_bounds = {'action_space_lowerbound':-np.array([10.]), 'action_space_upperbound':np.array([10.]), 'observation_space_lowerbound':-np.array([10.,10.,10]), 'observation_space_upperbound': np.array([10.,10.,10])}
-reward_weights = {'displacement_weights':np.array([1.]), 'velocity_weights':np.array([1.]), 'acceleration_weights':np.array([1.])}
+system_parameter = {'M':np.diag([1,1,1]),\
+                    'K':np.array([[100, -100, 0],[-100,200,-100],[0,-100,200]]),\
+                    'C':np.array([[0.4, -0.4, 0],[-0.4,0.8,-0.4],[0,-0.4,0.8]])}   
+space_bounds = {'action_space_lowerbound':-10*np.ones(3), 'action_space_upperbound':10*np.ones(3), 'observation_space_lowerbound':-10*np.ones(7), 'observation_space_upperbound': 10*np.ones(7)}
+reward_weights = {'displacement_weights':np.ones(3), 'velocity_weights':np.ones(3), 'acceleration_weights':np.ones(3)}
 
 # shall we remove observation_space_bound ? 
 ##################################################

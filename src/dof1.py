@@ -37,7 +37,7 @@ class DynamicEnv(gym.Env):
         w3 = self.reward_weights["acceleration_weights"]
 
         # continuous system 
-        A_c = np.array([[0.,1.],[-K/M,-C/M]])
+        A_c = np.array([[0.,1.],[-K[0]/M[0],-C[0]/M[0]]])
         B_c = np.array([[0.],[1/1.0]])
         G_c = np.array([[0.],[1]])
 
