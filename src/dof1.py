@@ -49,7 +49,7 @@ class DynamicEnv(gym.Env):
         D_d = B_c[1,:]
 
         # process equation / discrete state-space model
-        env_state = matmul(A_d,np.transpose(env_state)) + matmul(B_d,action) + matmul(G_d,np.array([ground_acceleration]))
+        env_state = matmul(A_d,np.transpose(env_state)) + matmul(B_d,action) + matmul(G_d,np.array([ground_acceleration])) 
 
         # acceleration calculated based on the state of the environment
         env_acceleration = matmul(C_d,np.transpose(env_state) ) + D_d*action[0]
