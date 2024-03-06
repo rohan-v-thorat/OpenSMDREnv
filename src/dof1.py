@@ -20,16 +20,26 @@ class DynamicEnv(gym.Env):
         C = system_parameter["C"]
         dt = time_step
         self.reward_weights = reward_weights
+        self.observation_size = len(self.observation_space_lowerbound)
 
         # continuous system 
         A_c = np.array([[0.,1],[-1/M@K,-1/M@C]])
         B_c = np.array([[0.],[1/M[0]]])
-        G_c = np.array([[0.],[1]])
+        G_c = np.array([[0.],[-1]])
 
         # discrete system
         A_d = expm(A_c*dt)
-        B_d = np.linalg.inv(A_c)@(A_d - np.eye(2))@B_c  
-        G_d = np.linalg.inv(A_c)@(A_d - np.eye(2) )@G_c
+
+        try:
+            B_d = np.linalg.inv(A_c)@(A_d - np.eye(2))@B_c  
+        except:
+            B_d = B_c*dt
+        
+        try:
+            G_d = np.linalg.inv(A_c)@(A_d - np.eye(2) )@G_c
+        except:
+            G_d = G_c*dt
+            
         C_d = A_c[1:2,:]
         D_d = B_c[1:2,:]
 
@@ -46,7 +56,7 @@ class DynamicEnv(gym.Env):
         return [seed]
 
     def step(self, action, env_state, ground_acceleration):
-        action = np.clip(action, self.action_space.low, self.action_space.high) # might be of no use, can be removed
+        action = np.clip(action, self.action_space.low, self.action_space.high) # Just done for precaution
 
         A_d = self.A_d
         B_d = self.B_d
@@ -80,6 +90,6 @@ class DynamicEnv(gym.Env):
         pass
 
     def reset(self):
-        self.agent_state = self.np_random.uniform(low=self.observation_space_lowerbound/2, high=self.observation_space_upperbound/2, size=(3,))
+        self.agent_state = self.np_random.uniform(low=self.observation_space_lowerbound/2, high=self.observation_space_upperbound/2, size=(self.observation_size,))
         self.steps_beyond_done = None
         return np.array(self.state)

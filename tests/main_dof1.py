@@ -58,7 +58,7 @@ data = data['T']
 time_step = 0.01
 system_parameter = {'M':np.array([1]), 'K':np.array([100]), 'C':np.array([0.4])}  
 space_bounds = {'action_space_lowerbound':-np.array([10.]), 'action_space_upperbound':np.array([10.]),\
-                 'observation_space_lowerbound':-np.array([10.,10.,10]), 'observation_space_upperbound': np.array([10.,10.,10])}
+                 'observation_space_lowerbound':-np.array([10.,10.,10]), 'observation_space_upperbound': np.array([10.,10.,10])} # change name to agent_state_lowerbound ?
 reward_weights = {'displacement_weights':np.array([1.]), 'velocity_weights':np.array([1.]), 'acceleration_weights':np.array([1.]), 'control_force_weights':np.array([1.])}
 
 # shall we remove observation_space_bound ? 
@@ -88,18 +88,16 @@ for i_episode in itertools.count(1):
     episode_reward = 0
     episode_steps = 0
     done = False
-    #state = env.reset()
+    #agent_state, env_state = env.reset()
     max_ep_steps = 1000
     start_point = 0
     agent_state = np.array([0.,data[start_point,0],0.])
-    env.agent_state = agent_state
+    env_state = np.array([0.,0.])
     for j in range(start_point + 1, start_point+1+max_ep_steps):
         if args.start_steps > total_numsteps:
             action = env.action_space.sample()
         else:
             action = agent.select_action(agent_state)  # Sample action from policy
-        if j==1:
-           env_state = np.array([0.,0.])
                   
         if len(memory) > args.batch_size:
             for i in range(args.updates_per_step):  # Number of updates per step in environment
@@ -112,7 +110,7 @@ for i_episode in itertools.count(1):
                 writer.add_scalar('loss/policy', policy_loss, updates)
                 updates += 1
         ground_acceleration = np.array([data[start_point,0]])
-        reward, env_state, env_acceleration= env.step(action, env_state, ground_acceleration) # Step
+        reward, env_state, env_acceleration = env.step(action, env_state, ground_acceleration) # Step
         next_agent_state = np.concatenate([env_acceleration,[data[j,0]],action], axis=0)
         episode_steps += 1
         total_numsteps += 1
@@ -125,7 +123,6 @@ for i_episode in itertools.count(1):
         memory.push(agent_state, action, reward, next_agent_state, mask) # Append transition to memory
 
         agent_state = next_agent_state
-        env.agent_state = agent_state
     if total_numsteps > args.num_steps:
         break
 
@@ -137,25 +134,23 @@ for i_episode in itertools.count(1):
         episodes = 1
         for _ in range(episodes):
             #state = env.reset()
-            state = np.array([0.,data[start_point,0],0.])
-            env.state = state
             episode_reward = 0
             done = False
+            agent_state = np.array([0.,data[start_point,0],0.])
+            env_state = np.array([0.,0.])
             for j in range(start_point + 1, start_point+1+max_ep_steps):
-                action = agent.select_action(state, eval=True)
-                if j==1:
-                   env_state = np.array([0.,0.])
+                action = agent.select_action(agent_state, eval=True) 
 
-                next_state, reward, done,env_state , env_acceleration= env.step(action,env_state) # Step
-                next_state = np.concatenate([env_acceleration,[data[j,0]],action], axis=0)
+                ground_acceleration = np.array([data[start_point,0]])
+                reward, env_state, env_acceleration = env.step(action, env_state, ground_acceleration) # Step
+                next_agent_state = np.concatenate([env_acceleration,[data[j,0]],action], axis=0)
                 episode_reward += reward
-                if y_store == []:
+                if len(y_store) == 0:
                     y_store = env_acceleration
                 else:
                     y_store = np.vstack((y_store, env_acceleration))
 
-                state = next_state
-                env.state = state
+                agent_state = next_agent_state
             avg_reward += episode_reward
         avg_reward /= episodes
 
