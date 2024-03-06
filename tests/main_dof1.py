@@ -8,7 +8,6 @@ from dof1 import DynamicEnv
 import numpy as np
 import itertools
 import torch
-# import pybullet  # 'import pybullet_envs' has been removed
 from sac import SAC
 from torch.utils.tensorboard import SummaryWriter
 from replay_memory import ReplayMemory

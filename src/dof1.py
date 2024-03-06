@@ -1,6 +1,5 @@
 import gymnasium as gym
 from scipy.linalg import expm
-from operator import matmul
 from gym import spaces
 from gym.utils import seeding
 import numpy as np
@@ -83,7 +82,6 @@ class DynamicEnv(gym.Env):
         # calculation of the reward
         reward =  -(w1@abs(x) + w2@abs(xdot) + w3@abs(xddot) + w4@abs(action))  
 
-        env_state = np.transpose(env_state)
         return reward, env_state, env_acceleration
 
     def render(self):

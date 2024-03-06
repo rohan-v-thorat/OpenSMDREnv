@@ -8,7 +8,6 @@ from dof3 import DynamicEnv
 import numpy as np
 import itertools
 import torch
-# import pybullet  # 'import pybullet_envs' has been removed
 from sac import SAC
 from torch.utils.tensorboard import SummaryWriter
 from replay_memory import ReplayMemory
@@ -125,7 +124,6 @@ for i_episode in itertools.count(1):
         memory.push(agent_state, action, reward, next_agent_state, mask) # Append transition to memory
 
         agent_state = next_agent_state
-        env.agent_state = agent_state
     if total_numsteps > args.num_steps:
         break
     
