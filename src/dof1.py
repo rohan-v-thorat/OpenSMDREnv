@@ -35,7 +35,7 @@ class DynamicEnv(gym.Env):
             B_d = B_c*dt
         
         try:
-            G_d = np.linalg.inv(A_c)@(A_d - np.eye(2) )@G_c
+            G_d = np.linalg.inv(A_c)@(A_d - np.eye(2))@G_c
         except:
             G_d = G_c*dt
             
