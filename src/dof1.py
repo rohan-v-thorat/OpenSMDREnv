@@ -28,7 +28,7 @@ class DynamicEnv(gym.Env):
         self.observation_size = len(self.observation_space_lowerbound)
 
         # continuous system 
-        A_c = np.array([[0.,1],[-1/M@K,-1/M@C]])
+        A_c = np.array([[0.,1],[-1/M@K,-1/M@C]]) # shall we write A_c as Ac ?
         B_c = np.array([[0.],[1/M[0]]])
         G_c = np.array([[0.],[-1]])
 

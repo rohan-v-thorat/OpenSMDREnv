@@ -11,12 +11,12 @@ from gym.utils import seeding
 import numpy as np
 
 class DynamicEnv(gym.Env):
-    def __init__(self, time_step= 0.01, system_parameter= {'M':np.diag([1,1,1]),\
-                    'K':np.array([[100, -100, 0],[-100,200,-100],[0,-100,200]]),\
-                    'C':np.array([[0.4, -0.4, 0],[-0.4,0.8,-0.4],[0,-0.4,0.8]])}, \
+    def __init__(self, time_step= 0.01, system_parameter= {'M':np.diag([1002.4,1002.4,1002.4]),\
+                    'K':1e6*np.array([[2.80, -1.68, 0.38],[-1.68, 3.09, -1.66],[0.38, -1.66, 1.36]]),\
+                    'C':np.array([[391.12, -58.53, 63.01],[-58.53, 466.83, -0.27],[63.01, -0.27, 446.97]])}, \
                  space_bounds = {'action_space_lowerbound':-10*np.ones(3), 'action_space_upperbound':10*np.ones(3),\
                                   'observation_space_lowerbound':-10*np.ones(7), 'observation_space_upperbound': 10*np.ones(7)},\
-                reward_weights = {'displacement_weights':np.ones(3), 'velocity_weights':np.ones(3), 'acceleration_weights':np.ones(3)}):
+                reward_weights = {'displacement_weights':np.ones(3), 'velocity_weights':np.ones(3), 'acceleration_weights':np.ones(3), 'control_force_weights':np.ones(3)}):
         self.observation_space_lowerbound = space_bounds["observation_space_lowerbound"] 
         self.observation_space_upperbound = space_bounds["observation_space_upperbound"]
         self.action_space_lowerbound = space_bounds["action_space_lowerbound"]
@@ -31,32 +31,32 @@ class DynamicEnv(gym.Env):
         self.observation_size = len(self.observation_space_lowerbound)
 
         # continuous system 
-        A_c = np.concatenate((np.concatenate((np.zeros((3,3)),np.eye(3)),axis=1),\
-                        np.concatenate((np.linalg.inv(M)@K, np.linalg.inv(M)@C),axis=1)),axis=0)
-        B_c = np.concatenate(([np.zeros((3,3)),np.linalg.inv(M)]),axis=0)
-        G_c = np.concatenate([np.zeros((3,1)),-np.ones((3,1))])
+        Ac = np.concatenate((np.concatenate((np.zeros((3,3)),np.eye(3)),axis=1),\
+                        np.concatenate((-np.linalg.inv(M)@K, -np.linalg.inv(M)@C),axis=1)),axis=0)
+        Bc = np.concatenate(([np.zeros((3,3)),np.linalg.inv(M)]),axis=0)
+        Gc = np.concatenate([np.zeros((3,1)),-np.ones((3,1))])
 
         # discrete system
-        A_d = expm(A_c*dt)
+        Ad = expm(Ac*dt)
 
         try:
-            B_d = np.linalg.inv(A_c)@(A_d - np.eye(6))@B_c  
+            Bd = np.linalg.inv(Ac)@(Ad - np.eye(6))@Bc  
         except:
-            B_d = B_c*dt
+            Bd = Bc*dt
         
         try:
-            G_d = np.linalg.inv(A_c)@(A_d - np.eye(6))@G_c
+            Gd = np.linalg.inv(Ac)@(Ad - np.eye(6))@Gc
         except:
-            G_d = G_c*dt
+            Gd = Gc*dt
 
-        C_d = A_c[3:,:]
-        D_d = B_c[3:,:]
+        Cd = Ac[3:,:]
+        Dd = Bc[3:,:]
 
-        self.A_d = A_d
-        self.B_d = B_d
-        self.G_d = G_d
-        self.C_d = C_d
-        self.D_d = D_d
+        self.Ad = Ad
+        self.Bd = Bd
+        self.Gd = Gd
+        self.Cd = Cd
+        self.Dd = Dd
 
         self.seed()
 
@@ -67,11 +67,11 @@ class DynamicEnv(gym.Env):
     def step(self, action, env_state, ground_acceleration):
         action = np.clip(action, self.action_space.low, self.action_space.high) # might be of no use, can be removed
         
-        A_d = self.A_d
-        B_d = self.B_d
-        G_d = self.G_d
-        C_d = self.C_d
-        D_d = self.D_d
+        Ad = self.Ad
+        Bd = self.Bd
+        Gd = self.Gd
+        Cd = self.Cd
+        Dd = self.Dd
 
         w1 = self.reward_weights["displacement_weights"]
         w2 = self.reward_weights["velocity_weights"]
@@ -79,10 +79,10 @@ class DynamicEnv(gym.Env):
         w4 = self.reward_weights["control_force_weights"]
 
         # process equation / discrete state-space model
-        env_state = A_d@np.transpose(env_state) + B_d@action + G_d@ground_acceleration 
+        env_state = Ad@np.transpose(env_state) + 0*Bd@action + 0*Gd@ground_acceleration 
 
         # acceleration calculated based on the state of the environment
-        env_acceleration = C_d@np.transpose(env_state) + D_d@action
+        env_acceleration = Cd@np.transpose(env_state) + 0*Dd@action
         
         # assignment of the displacement, velocity and acceleration values
         x = env_state[0:3]
@@ -90,7 +90,7 @@ class DynamicEnv(gym.Env):
         xddot = env_acceleration
 
         # calculation of the reward
-        reward =  -(w1@abs(x) + w2@abs(xdot) + w3@abs(xddot) + w4@abs(action))  
+        reward =  -(w1@abs(x) + w2@abs(xdot) + w3@abs(xddot) + w4@abs(action)) 
 
         return reward, env_state, env_acceleration
 
@@ -100,5 +100,5 @@ class DynamicEnv(gym.Env):
     def reset(self):
         self.agent_state = self.np_random.uniform(low=self.observation_space_lowerbound/2, high=self.observation_space_upperbound/2, size=(self.observation_size,))
         self.env_state = self.np_random.uniform(low=self.observation_space_lowerbound/2, high=self.observation_space_upperbound/2, size=(self.observation_size,))
-        self.steps_beyond_done = None
+        self.steps_beyonDdone = None
         return np.array(self.agent_state), np.array(self.env_state)
