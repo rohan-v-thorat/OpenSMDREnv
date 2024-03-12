@@ -5,6 +5,8 @@ This package includes 1-dof, 3-dof, 5-dof and 76-dof dynamical system environmen
 
 User have the flexibility to change the default mass, spring, damper properties i.e mass, stiffness and damping coefficient.
 
+[mention about 3,5,76 dof in more detailed along with the citation of the paper from which parameter value are taken]
+
 Requires:
 * `numpy`
 * `gymnasium`
