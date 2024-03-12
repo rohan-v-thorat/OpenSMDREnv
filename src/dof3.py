@@ -2,6 +2,8 @@
 Authors of this code:
 Rohan Thorat, Juhi Singh, Prof. Rajdip Nayek
 
+Default system parameter values are taken from this article: https://ascelibrary.org/doi/abs/10.1061/(ASCE)0733-9399(1989)115:8(1609)
+
 """
 
 import gymnasium as gym
