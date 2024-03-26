@@ -74,7 +74,7 @@ np.random.seed(args.seed)
 # Agent
 agent = SAC(env.observation_space.shape[0], env.action_space, args)
 
-writer = SummaryWriter('runs/{}_SAC_V_{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"), args.env_name))
+#writer = SummaryWriter('runs/{}_SAC_V_{}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"), args.env_name))
 
 # Memory
 memory = ReplayMemory(args.replay_size, args.seed)
@@ -103,10 +103,10 @@ for i_episode in itertools.count(1):
                 # Update parameters of all the networks
                 value_loss, critic_1_loss, critic_2_loss, policy_loss = agent.update_parameters(memory, args.batch_size, updates)
 
-                writer.add_scalar('loss/value', value_loss, updates)
-                writer.add_scalar('loss/critic_1', critic_1_loss, updates)
-                writer.add_scalar('loss/critic_2', critic_2_loss, updates)
-                writer.add_scalar('loss/policy', policy_loss, updates)
+                #writer.add_scalar('loss/value', value_loss, updates)
+                #writer.add_scalar('loss/critic_1', critic_1_loss, updates)
+                #writer.add_scalar('loss/critic_2', critic_2_loss, updates)
+                #writer.add_scalar('loss/policy', policy_loss, updates)
                 updates += 1
         ground_acceleration = np.array([data[start_point,0]])
         reward, env_state, env_acceleration = env.step(action, env_state, ground_acceleration) # Step
@@ -125,7 +125,7 @@ for i_episode in itertools.count(1):
     if total_numsteps > args.num_steps:
         break
 
-    writer.add_scalar('reward/train', episode_reward, i_episode)
+    #writer.add_scalar('reward/train', episode_reward, i_episode)
     print("Episode: {}, total numsteps: {}, episode steps: {}, reward: {}".format(i_episode, total_numsteps, episode_steps, round(episode_reward, 2)))
     y_store = []
     if i_episode % 2 == 0 and args.eval == True:
@@ -154,7 +154,7 @@ for i_episode in itertools.count(1):
         avg_reward /= episodes
 
 
-        writer.add_scalar('reward/test', avg_reward, i_episode)
+        #writer.add_scalar('reward/test', avg_reward, i_episode)
 
         print("----------------------------------------")
         print("Test Episodes: {}, Avg. Reward: {}".format(episodes, round(avg_reward, 2)))
