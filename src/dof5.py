@@ -33,3 +33,33 @@ class DynamicEnv(gym.Env):
         dt = time_step
         self.reward_weights = reward_weights
         self.observation_size = len(self.observation_space_lowerbound)
+                    
+        # continuous system 
+        Ac = np.concatenate((np.concatenate((np.zeros((3,3)),np.eye(3)),axis=1),\
+                        np.concatenate((-np.linalg.inv(M)@K, -np.linalg.inv(M)@C),axis=1)),axis=0)
+        Bc = np.concatenate(([np.zeros((3,3)),np.linalg.inv(M)]),axis=0)
+        Gc = np.concatenate([np.zeros((3,1)),-np.ones((3,1))])
+
+        # discrete system
+        Ad = expm(Ac*dt)
+
+        try:
+            Bd = np.linalg.inv(Ac)@(Ad - np.eye(6))@Bc  
+        except:
+            Bd = Bc*dt
+        
+        try:
+            Gd = np.linalg.inv(Ac)@(Ad - np.eye(6))@Gc
+        except:
+            Gd = Gc*dt
+
+        Cd = Ac[3:,:]
+        Dd = Bc[3:,:]
+
+        self.Ad = Ad
+        self.Bd = Bd
+        self.Gd = Gd
+        self.Cd = Cd
+        self.Dd = Dd
+
+        self.seed()    
