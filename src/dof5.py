@@ -18,9 +18,9 @@ class DynamicEnv(gym.Env):
     def __init__(self, time_step= 0.01, system_parameter= {'M':data('M5'),\
                     'K':data('K5'),\
                     'C':data('C5')}, \
-                 space_bounds = {'action_space_lowerbound':-10*np.ones(3), 'action_space_upperbound':10*np.ones(3),\
-                                  'observation_space_lowerbound':-10*np.ones(7), 'observation_space_upperbound': 10*np.ones(7)},\
-                reward_weights = {'displacement_weights':np.ones(3), 'velocity_weights':np.ones(3), 'acceleration_weights':np.ones(3), 'control_force_weights':np.ones(3)}):
+                 space_bounds = {'action_space_lowerbound':-10*np.ones(5), 'action_space_upperbound':10*np.ones(5),\
+                                  'observation_space_lowerbound':-10*np.ones(11), 'observation_space_upperbound': 10*np.ones(11)},\
+                reward_weights = {'displacement_weights':np.ones(5), 'velocity_weights':np.ones(5), 'acceleration_weights':np.ones(5), 'control_force_weights':np.ones(5)}):
         self.observation_space_lowerbound = space_bounds["observation_space_lowerbound"] 
         self.observation_space_upperbound = space_bounds["observation_space_upperbound"]
         self.action_space_lowerbound = space_bounds["action_space_lowerbound"]
