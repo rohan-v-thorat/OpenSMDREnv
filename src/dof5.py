@@ -11,13 +11,18 @@ from scipy.linalg import expm
 from gym import spaces
 from gym.utils import seeding
 import numpy as np
-data = sio.loadmat('5dof_MKC_matrix.mat')
-K = data('K5')
-C = data('C5')
+import scipy.io as sio
+from scipy.io import savemat
+import sys
+sys.path.insert(0,'../src')
+import os
+
+
 class DynamicEnv(gym.Env):
-    def __init__(self, time_step= 0.01, system_parameter= {'M':data('M5'),\
-                    'K':data('K5'),\
-                    'C':data('C5')}, \
+    data = sio.loadmat('5dof_MKC_matrix.mat')
+    def __init__(self, time_step= 0.01, system_parameter= {'M':data['M5'],\
+                    'K':data['K5'],\
+                    'C':data['C5']}, \
                  space_bounds = {'action_space_lowerbound':-10*np.ones(5), 'action_space_upperbound':10*np.ones(5),\
                                   'observation_space_lowerbound':-10*np.ones(11), 'observation_space_upperbound': 10*np.ones(11)},\
                 reward_weights = {'displacement_weights':np.ones(5), 'velocity_weights':np.ones(5), 'acceleration_weights':np.ones(5), 'control_force_weights':np.ones(5)}):
