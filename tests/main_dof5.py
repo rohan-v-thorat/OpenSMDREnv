@@ -56,18 +56,18 @@ data = data['T']
 ############# user defined parameters ############
 # system parameter are taken from this article: https://ascelibrary.org/doi/10.1061/%28ASCE%29EM.1943-7889.0001226
 time_step = 0.01 
-system_parameter = {'M':np.diag([1002.4,1002.4,1002.4]),\
-                    'K':1e6*np.array([[2.80, -1.68, 0.38],[-1.68, 3.09, -1.66],[0.38, -1.66, 1.36]]),\
-                    'C':np.array([[391.12, -58.53, 63.01],[-58.53, 466.83, -0.27],[63.01, -0.27, 446.97]])}   
-space_bounds = {'action_space_lowerbound':-np.ones(3), 'action_space_upperbound':np.ones(3), 'observation_space_lowerbound':-10*np.ones(7), 'observation_space_upperbound': 10*np.ones(7)}
-reward_weights = {'displacement_weights':np.ones(3), 'velocity_weights':np.ones(3), 'acceleration_weights':np.ones(3), 'control_force_weights':np.ones(3)}
+# system_parameter = {'M':np.diag([1002.4,1002.4,1002.4]),\
+#                     'K':1e6*np.array([[2.80, -1.68, 0.38],[-1.68, 3.09, -1.66],[0.38, -1.66, 1.36]]),\
+#                     'C':np.array([[391.12, -58.53, 63.01],[-58.53, 466.83, -0.27],[63.01, -0.27, 446.97]])}   
+# space_bounds = {'action_space_lowerbound':-np.ones(3), 'action_space_upperbound':np.ones(3), 'observation_space_lowerbound':-10*np.ones(7), 'observation_space_upperbound': 10*np.ones(7)}
+# reward_weights = {'displacement_weights':np.ones(3), 'velocity_weights':np.ones(3), 'acceleration_weights':np.ones(3), 'control_force_weights':np.ones(3)}
 
 # shall we remove observation_space_bound ? 
 ##################################################
 
 # Environment
 #env = gym.make(args.env_name)
-env = DynamicEnv(time_step, system_parameter, space_bounds, reward_weights ) #
+env = DynamicEnv() #
 env.seed(args.seed)
 env.action_space.seed(args.seed)
 torch.manual_seed(args.seed)
@@ -92,9 +92,9 @@ for i_episode in itertools.count(1):
     #agent_state, env_state = env.reset()
     max_ep_steps = 1000
     start_point = 0
-    agent_state = np.array([0.,0.,0.,data[start_point,0],0.,0.,0.])
+    agent_state = np.array([0.,0.,0.,0.,0.,data[start_point,0],0.,0.,0.,0.,0.])
     # env_state = np.zeros(2*3)
-    env_state = np.array([0.,0.1,0,0,0,0 ])
+    env_state = np.array([0.,0.,0.,0.,0.,0.,0.,0.,0.,0.])
     for j in range(start_point + 1, start_point+1+max_ep_steps):
         if args.start_steps > total_numsteps:
             action = env.action_space.sample()
@@ -139,8 +139,8 @@ for i_episode in itertools.count(1):
             #state = env.reset()
             episode_reward = 0
             done = False
-            agent_state = np.array([0.,0.,0.,data[start_point,0],0.,0.,0.])
-            env_state = np.zeros(2*3)
+            agent_state = np.array([0.,0.,0.,0.,0.,data[start_point,0],0.,0.,0.,0.,0.])
+            env_state = np.zeros(2*5)
             for j in range(start_point + 1, start_point+1+max_ep_steps):
                 action = agent.select_action(agent_state, eval=True)
 
