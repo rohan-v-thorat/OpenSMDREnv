@@ -81,10 +81,10 @@ class DynamicEnv(gym.Env):
         w4 = self.reward_weights["control_force_weights"]
 
         # process equation / discrete state-space model
-        env_state = Ad@np.transpose(env_state) + 0*Bd@action + 0*Gd@ground_acceleration 
+        env_state = Ad@np.transpose(env_state) + Bd@action + Gd@ground_acceleration 
 
         # acceleration calculated based on the state of the environment
-        env_acceleration = Cd@np.transpose(env_state) + 0*Dd@action
+        env_acceleration = Cd@np.transpose(env_state) + Dd@action
         
         # assignment of the displacement, velocity and acceleration values
         x = env_state[0:3]
