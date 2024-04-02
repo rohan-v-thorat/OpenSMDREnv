@@ -94,7 +94,7 @@ for i_episode in itertools.count(1):
     start_point = 0
     agent_state = np.array([0.,0.,0.,data[start_point,0],0.,0.,0.])
     # env_state = np.zeros(2*3)
-    env_state = np.array([0.,0.1,0,0,0,0 ])
+    env_state = np.array([0,0,0,0,0,0 ])
     for j in range(start_point + 1, start_point+1+max_ep_steps):
         if args.start_steps > total_numsteps:
             action = env.action_space.sample()
