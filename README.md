@@ -1,9 +1,9 @@
 # OpenSMDREnv: Reinforcement learning environment for spring-mass-damper system
 Rohan Thorat, Juhi Singh, Prof. Rajdip Nayek 
 
-This package includes 1-dof, 3-dof, 5-dof and 76-dof dynamical system environment. The 76-dof dynamical system is of 76-story 306 m concrete office tower proposed for the city of Melbourne, Australia. It is a benchmark system which is usually used in the domain of mechanical and civil engineering.
+This package includes 1-DOF, 3-DOF, 5-DOF, and 76-DOF dynamical system environment. 
 
-User have the flexibility to change the default mass, spring, damper properties i.e mass, stiffness and damping coefficient.
+Users can change the default mass, spring, and damper properties, i.e. mass, stiffness, and damping coefficient.
 
 [mention about 3,5,76 dof in more detailed along with the citation of the paper from which parameter value are taken]
 
@@ -11,6 +11,16 @@ Requires:
 * `numpy`
 * `gymnasium`
 * `scipy`
+
+## 3-DOF
+Default system parameter values are taken from this article: https://ascelibrary.org/doi/abs/10.1061/(ASCE)0733-9399(1989)115:8(1609)
+
+## 5-DOF
+Default system parameter values are taken from this article: https://ascelibrary.org/doi/10.1061/%28ASCE%29EM.1943-7889.0001226
+
+## 76-DOF
+The 76-DOF dynamical system is of 76-story 306 m concrete office tower proposed for the city of Melbourne, Australia. It is a benchmark system which is usually used in the domain of mechanical and civil engineering.
+Default system parameter values are taken from this article: https://ascelibrary.org/doi/10.1061/%28ASCE%29EM.1943-7889.0001226
 
 *We hope you find this code helpful*
 
