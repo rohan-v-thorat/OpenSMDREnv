@@ -10,6 +10,13 @@ Requires:
 * `gymnasium`
 * `scipy`
 
+## 1-DOF
+Default system parameter values are defined as below:
+
+$\Delta t = 0.01$
+
+$M = 1, K = 100, C = 0.4$
+
 ## 3-DOF
 Default system parameter values are taken from this article: https://ascelibrary.org/doi/abs/10.1061/(ASCE)0733-9399(1989)115:8(1609)
 
