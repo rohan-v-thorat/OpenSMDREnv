@@ -16,7 +16,7 @@ Requires:
 * `scipy`
 
 ## Environments detail
-### <u>1-DOF</u>
+ <u>1-DOF</u>
 Default system parameter values are defined as below:
 
 $\Delta t = 0.01$
