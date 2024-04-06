@@ -13,6 +13,8 @@ Requires:
 ## 3-DOF
 Default system parameter values are taken from this article: https://ascelibrary.org/doi/abs/10.1061/(ASCE)0733-9399(1989)115:8(1609)
 
+$\delta t = 0.01$
+
 <p align="center">
   <img src="imgs/3DOF.png">
 </p>
