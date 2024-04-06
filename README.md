@@ -22,7 +22,6 @@ Default system parameter values are taken from this article: https://ascelibrary
 
 $\Delta t = 0.01$
 
-change this image
 <p align="center">
   <img src="imgs/3DOF.png">
 </p>
@@ -32,6 +31,9 @@ Default system parameter values are taken from this article: https://ascelibrary
 
 $\Delta t = 0.01$
 
+<p align="center">
+  <img src="imgs/5DOF.png">
+</p>
 
 
 ## 76-DOF
