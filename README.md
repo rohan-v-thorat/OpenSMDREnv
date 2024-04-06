@@ -13,7 +13,9 @@ Requires:
 ## 3-DOF
 Default system parameter values are taken from this article: https://ascelibrary.org/doi/abs/10.1061/(ASCE)0733-9399(1989)115:8(1609)
 
-Add M,K,C matrix
+<p align="center">
+  <img src="imgs/3DOF.png">
+</p>
 
 ## 5-DOF
 Default system parameter values are taken from this article: https://ascelibrary.org/doi/10.1061/%28ASCE%29EM.1943-7889.0001226
