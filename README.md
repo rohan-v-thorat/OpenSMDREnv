@@ -42,6 +42,7 @@ Default system parameter values are taken from this article: https://ascelibrary
 
 $\Delta t = 0.01$
 
+The value of the M, K, C matrix can be seen in 'src' folder in file named '76dof_MKC_matrix.mat'.
 
 *We hope you find this code helpful*
 
