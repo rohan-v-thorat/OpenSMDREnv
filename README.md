@@ -2,6 +2,11 @@
 Rohan Thorat, Juhi Singh, Prof. Rajdip Nayek 
 
 This package includes 1-DOF, 3-DOF, 5-DOF, and 76-DOF dynamical system environment.
+To install this package, run the below command:
+```{bash}
+pip install OpenSMRDEnv
+```
+
 
 Users can change the default mass, spring, and damper properties, i.e. mass, stiffness, and damping coefficient.
 
