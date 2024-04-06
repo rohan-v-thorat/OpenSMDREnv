@@ -54,7 +54,7 @@ $\Delta t = 0.01$
 The value of the M, K, and C matrix can be seen in the file named '76dof_MKC_matrix.mat' located in the 'src' folder.
 
 
-## Add one example of how to use the package
+## Add one example of how to use the call the environment function
 
 *We hope you find this code helpful*
 
