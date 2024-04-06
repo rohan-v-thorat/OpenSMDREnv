@@ -56,6 +56,6 @@ The values of the M, K, and C matrix are stored in the file named '76dof_MKC_mat
 
 ## Add one example of how to call the environment function
 
-*We hope you find this code helpful*
+
 
 
