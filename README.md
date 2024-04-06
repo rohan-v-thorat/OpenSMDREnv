@@ -43,7 +43,7 @@ $\Delta t = 0.01$
   <img src="imgs/5DOF.png">
 </p>
 
-The exact values of the M, K, and C matrix can be seen in the file named '5dof_MKC_matrix.mat' located in the 'src' folder.
+The exact values of the M, K, and C matrix are stored in the file named '5dof_MKC_matrix.mat' located in the 'src' folder.
 
 ### 76-DOF:
 The 76-DOF dynamical system is of 76-story 306 m concrete office tower proposed for the city of Melbourne, Australia. It is a benchmark system which is usually used in the domain of mechanical and civil engineering.
@@ -51,7 +51,7 @@ Default system parameter values are taken from this article: https://ascelibrary
 
 $\Delta t = 0.01$
 
-The value of the M, K, and C matrix can be seen in the file named '76dof_MKC_matrix.mat' located in the 'src' folder.
+The values of the M, K, and C matrix are stored in the file named '76dof_MKC_matrix.mat' located in the 'src' folder.
 
 
 ## Add one example of how to call the environment function
