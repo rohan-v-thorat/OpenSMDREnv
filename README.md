@@ -13,11 +13,7 @@ Requires:
 ## 3-DOF
 Default system parameter values are taken from this article: https://ascelibrary.org/doi/abs/10.1061/(ASCE)0733-9399(1989)115:8(1609)
 
-$[ \left( \begin{array}{ccc}
-a & b & c \
-d & e & f \
-g & h & i \end{array} \right)]$
-
+<span class="math inline">\(p\)</span>-value
 ## 5-DOF
 Default system parameter values are taken from this article: https://ascelibrary.org/doi/10.1061/%28ASCE%29EM.1943-7889.0001226
 
