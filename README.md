@@ -54,8 +54,12 @@ $\Delta t = 0.01$
 The values of the M, K, and C matrix are stored in the file named '76dof_MKC_matrix.mat' located in the 'src' folder.
 
 
-## Add one example of how to call the environment function
+## Basic coding syntax
 
+Initialize the environment as env = ndof(); where 'n' is number of degree of freedom
 
+reward, env_state, env_acceleration = env.step(action, env_state, ground_acceleration)
+
+Here env_state is the state of the dynamical system i.e. its displacements and velocity. Action is input control force vector of size 'n'.
 
 
