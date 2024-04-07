@@ -58,7 +58,10 @@ The values of the M, K, and C matrix are stored in the file named '76dof_MKC_mat
 
 Initialize the environment as env = ndof(); where 'n' is number of degree of freedom
 
+The main line of code:
+```{bash}
 reward, env_state, env_acceleration = env.step(action, env_state, ground_acceleration)
+```
 
 Here env_state is the state of the dynamical system i.e. its displacements and velocity. Action is input control force vector of size 'n'.
 
