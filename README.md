@@ -56,7 +56,7 @@ The values of the M, K, and C matrix are stored in the file named '76dof_MKC_mat
 
 ## Basic coding syntax
 
-Initialize the environment as env = dofn.DynamicEnv(); where 'n' is number of degree of freedom (for n=3: env = dof3.DynamicEnv())
+Initialize the environment as env = dof{n}.DynamicEnv(); where 'n' is number of degree of freedom (for n=3: env = dof3.DynamicEnv())
 
 The main line of code:
 ```{bash}
