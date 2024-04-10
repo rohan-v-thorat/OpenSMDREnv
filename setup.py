@@ -8,7 +8,7 @@ setup(
     version="0.0.1",
     author="Rohan Thorat, Juhi Singh, Rajdip Nayek",
     author_email="rohanthorat2@gmail.com",
-    description="Spring-mass-damper dynamical system environment",
+    description="Spring-Mass-Damper Reinforcement learning Environment",
     long_description=readme,
     url="https://github.com/rohan-v-thorat/OpenSMDREnv",
     long_description_content_type="text/markdown",
