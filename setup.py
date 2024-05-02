@@ -6,7 +6,7 @@ with open("README.md", "r") as f:
 setup(
     name="OpenSMDREnv",
     version="0.0.1",
-    author="Rohan Thorat, Juhi Singh, Rajdip Nayek",
+    author="Rohan Thorat",
     author_email="rohanthorat2@gmail.com",
     description="Spring-Mass-Damper Reinforcement learning Environment",
     long_description=readme,
