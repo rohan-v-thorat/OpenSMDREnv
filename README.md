@@ -2,7 +2,7 @@
 Rohan Thorat, Juhi Singh, Prof. Rajdip Nayek 
 
 This package includes 1-DOF, 3-DOF, 5-DOF, and 76-DOF dynamical system environment.
-To install this package, run the below command[CURRENTLY THIS OPTION IS NOT AVAILABLE]:
+To install this package, run the below command [CURRENTLY THIS OPTION IS NOT AVAILABLE]:
 ```{bash}
 pip install OpenSMRDEnv
 ```
