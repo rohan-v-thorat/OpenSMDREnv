@@ -1,5 +1,5 @@
 # OpenSMDREnv: Reinforcement learning environment for spring-mass-damper system
-Rohan Thorat, Juhi Singh, Prof. Rajdip Nayek 
+Rohan Thorat, Juhi Singh 
 
 This package includes 1-DOF, 3-DOF, 5-DOF, and 76-DOF dynamical system environment.
 To install this package, run the below command [CURRENTLY PIP INSTALL OPTION IS NOT AVAILABLE]:
